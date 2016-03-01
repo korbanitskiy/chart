@@ -72,6 +72,7 @@ $(document).ready(function(){
         color_url = current_url.replace('pasteurizer', 'edit'),
         $input_from = $('#from'),
         $input_to = $('#to'),
+        $btn_chart_show = $('#chart_show_btn'),
         chart = new Highcharts.Chart({
         chart: {
             renderTo: 'chart-container',
@@ -132,16 +133,16 @@ $(document).ready(function(){
              while(chart.series.length > 0){
                     chart.series[0].remove();
                 }
-            input_from.attr('disabled', true);
-            input_to.attr('disabled', true);
-            btn_chart_show.attr({'disabled': true, style:'color: #5d5d5d'});
+            $input_from.attr('disabled', true);
+            $input_to.attr('disabled', true);
+            $btn_chart_show.attr({'disabled': true, style:'color: #5d5d5d'});
             id = auto_update();
         }
         else{
             clearInterval(id);
-            input_from.attr('disabled', false);
-            input_to.attr('disabled', false);
-            btn_chart_show.attr({'disabled': false, style:'color: black'});
+            $input_from.attr('disabled', false);
+            $input_to.attr('disabled', false);
+            $btn_chart_show.attr({'disabled': false, style:'color: black'});
         }
     });
 
@@ -149,7 +150,7 @@ $(document).ready(function(){
         var color = $(this).val();
         var name = $(this).attr('name');
         var chart_number = parseInt(name.slice(5)) - 1;
-        alert(chart_number);
+        //alert(chart_number);
         chart.series[chart_number].options.color = color;
         chart.series[chart_number].update(chart.series[chart_number].options);
         $.ajax({
@@ -164,7 +165,7 @@ $(document).ready(function(){
         });
     });
 
-    $('#chart_show_btn').click(function(){
+    $btn_chart_show.click(function(){
        chart_update(chart, chart_url,  $input_from.val(), $input_to.val(), false, true);
     });
 

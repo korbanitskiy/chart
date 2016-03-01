@@ -37,7 +37,6 @@
     {% endfor %}
 </ul>
 
-
 <table class="table table-bordered">
   <tr>
       <td style="width: 4em">#</td>
@@ -45,72 +44,17 @@
       <td>Описание</td>
       <td style="width: 5em">Цвет</td>
   </tr>
-  <tr>
-      {% if object.trend1 %}
-          <td>1</td>
-          <td>{{ object.trend1.name }}</td>
-          <td>{{ object.trend1.description }}</td>
-          <td><input type="color" name="color1" class="color" value="{{ object.color1 }}"></td>
-      {% endif %}
-  </tr>
-  <tr>
-      {% if object.trend2 %}
-          <td>2</td>
-          <td>{{ object.trend2.name }}</td>
-          <td>{{ object.trend2.description }}</td>
-          <td><input type="color" name="color2" class="color" value="{{ object.color2 }}"></td>
-      {% endif %}
-  </tr>
-  <tr>
-      {% if object.trend3 %}
-          <td>3</td>
-          <td>{{ object.trend3.name }}</td>
-          <td>{{ object.trend3.description }}</td>
-          <td><input type="color" name="color3" class="color" value="{{ object.color3 }}"></td>
-      {% endif %}
-  </tr>
-  <tr>
-      {% if object.trend4 %}
-          <td>4</td>
-          <td>{{ object.trend4.name }}</td>
-          <td>{{ object.trend4.description }}</td>
-          <td><input type="color" name="color4" class="color" value="{{ object.color4 }}"></td>
-      {% endif %}
-  </tr>
-  <tr>
-      {% if object.trend5 %}
-          <td>5</td>
-          <td>{{ object.trend5.name }}</td>
-          <td>{{ object.trend5.description }}</td>
-          <td><input type="color" name="color5" class="color" value="{{ object.color5 }}"></td>
-      {% endif %}
-  </tr>
-  <tr>
-      {% if object.trend6 %}
-          <td>6</td>
-          <td>{{ object.trend6.name }}</td>
-          <td>{{ object.trend6.description }}</td>
-          <td><input type="color" name="color6" class="color" value="{{ object.color6 }}"></td>
-      {% endif %}
-  </tr>
-  <tr>
-      {% if object.trend7 %}
-          <td>7</td>
-          <td>{{ object.trend7.name }}</td>
-          <td>{{ object.trend7.description }}</td>
-          <td><input type="color" name="color7" class="color" value="{{ object.color7 }}"></td>
-      {% endif %}
-  </tr>
-  <tr>
-      {% if object.trend8 %}
-          <td>8</td>
-          <td>{{ object.trend8.name }}</td>
-          <td>{{ object.trend8.description }}</td>
-          <td><input type="color" name="color8" class="color" value="{{ object.color8 }}"></td>
-      {% endif %}
-  </tr>
+  {% for trend in trends %}
+    <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ trend.name }}</td>
+        <td>{{ trend.description }}</td>
+        <td><input type="color" name="color{{ forloop.counter }}" class="color" value="{{ trend.color }}"></td>
+    </tr>
+    {% endfor %}
 </table>
-    {% if user.is_active %}
-        <a href="{% url 'trend_edit' pasteurizer trend %}" class="btn btn-default">Изменить</a>
-    {% endif %}
+
+{% if user.is_active %}
+    <a href="{% url 'trend_edit' pasteurizer trend %}" class="btn btn-default">Изменить</a>
+{% endif %}
 {% endblock %}

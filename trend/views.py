@@ -44,6 +44,16 @@ class Pasteurizer(DetailView):
         context['trend'] = int(self.kwargs['trend'])
         context['trend_qs'] = self.queryset
         context['pasteurizer'] = self.kwargs['pasteurizer']
+
+        trends = []
+        for i in range(1, 9):
+            sensor = getattr(self.object, 'trend' + str(i))
+            if sensor:
+                trend = {'name': sensor.name,
+                         'description': sensor.description,
+                         'color': getattr(self.object, 'color' + str(i))}
+                trends.append(trend)
+        context['trends'] = trends
         return context
 
     def get_object(self, queryset=None):
@@ -77,7 +87,7 @@ class TrendEdit(UpdateView):
             obj.__dict__[name] = request.GET['color']
             obj.save()
             return HttpResponse(status=200)
-        # self.object = self.get_object()
+
         return super(TrendEdit, self).get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
