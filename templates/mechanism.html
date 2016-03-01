@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Mechanism{% endblock %}
+{% block body %}
+<form class="form-inline">
+    <div class="form-group">
+        <label for="from">Начало</label>
+        <input type="datetime-local" name="from" value="{{ date_from }}">
+    </div>
+    <div class="form-group">
+        <label for="to">Конец</label>
+        <input type="datetime-local" name="to" value="{{ date_to }}">
+    </div>
+    <div class="form-group">
+        <span>Механизм</span>
+        <select class="form-control" name="mechanism">
+            <option>All</option>
+            {% for mech in mechanisms %}
+                <option {% ifequal cur_mech mech.name %}selected="selected"{% endifequal %}>{{ mech.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <button type="submit">Показать</button>
+</form>
+
+<table class="table table-condensed">
+  <tr>
+      <td>#</td>
+      <td>Время</td>
+      <td>Механизм</td>
+      <td>Состояние</td>
+  </tr>
+  {% for object in object_list %}
+  <tr class="">
+    <td>{{ forloop.counter }}</td>
+    <td>{{ object.time_stamp|date:"Y-m-d, H:i:s" }}</td>
+    <td>{{ object.mechanism.name }}</td>
+    <td>{{ object.state.text }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

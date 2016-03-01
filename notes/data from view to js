@@ -1,0 +1,10 @@
+"""Convert python data to JS"""
+
+views.py:
+def test(request):
+    d = {'a': 'hello', 'b': 'hi'}
+    data = json.dumps(d)
+    return render(request, 'test.html', {'data': data})
+
+html/js:
+var obj = {{ data|safe }}

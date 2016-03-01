@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}Message{% endblock %}
+{% block message_active %}active{% endblock %}
+{% block body %}
+<form class="form-inline">
+    <div class="form-group">
+        <label for="from">Начало</label>
+        <input type="datetime-local" name="from" value="{{ date_from }}">
+    </div>
+    <div class="form-group">
+        <label for="to">Конец</label>
+        <input type="datetime-local" name="to" value="{{ date_to }}">
+    </div>
+    <div class="form-group">
+        <span>Тип</span>
+        <select class="form-control" name="type">
+            <option>All</option>
+            {% for type in types %}
+                <option {% ifequal cur_type type.text %}selected="selected"{% endifequal %}>{{ type.text }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="form-group">
+        <span>Состояние</span>
+        <select class="form-control" name="state">
+            <option>All</option>
+            {% for state in states %}
+                <option {% ifequal cur_state state %}selected="selected"{% endifequal %}>{{ state }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <button type="submit">Показать</button>
+</form>
+
+<table class="table table-condensed">
+  <tr>
+      <td>#</td>
+      <td>Время</td>
+      <td>Описание</td>
+      <td>Тип</td>
+      <td>Состояние</td>
+  </tr>
+  {% for object in object_list %}
+  <tr class="{{ object.message.type.text }} {{ object.state }}">
+    <td>{{ forloop.counter }}</td>
+    <td>{{ object.time_stamp|date:"Y-m-d, H:i:s" }}</td>
+    <td>{{ object.message.text }}</td>
+    <td>{{ object.message.type.text }}</td>
+    <td>{{ object.state }}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+{% endblock %}

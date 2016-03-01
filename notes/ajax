@@ -1,0 +1,35 @@
+""" Exchange data with ajax"""
+
+js:
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#btn').click(function () {
+            $.ajax({
+                url:'/ajax_test/',
+                type: 'GET',
+                data: {'a': '10', 'b': '20', 'c': 30},
+                success: function(reply){
+                    obj = JSON.parse(reply);
+                    $('#val_a').text(obj.a);
+                    $('#val_b').text(obj.b);
+                    $('#val_c').text(obj.c);
+                }
+            });
+        });
+    });
+</script>
+
+views.py:
+def ajax_test(request):
+    try:
+        a = request.GET['a']
+        b = request.GET['b']
+        c = request.GET['c']
+    except:
+        a = b = c = 0
+    dict = {'a': a, 'b': b, 'c': c}
+    data = json.dumps(dict)
+    return HttpResponse(data)
+
+urls.py:
+    url(r'^ajax_test/$', ajax_test),
