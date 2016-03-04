@@ -49,7 +49,8 @@ class Pasteurizer(DetailView):
         for i in range(1, 9):
             sensor = getattr(self.object, 'trend' + str(i))
             if sensor:
-                trend = {'name': sensor.name,
+                trend = {'number': i,
+                         'name': sensor.name,
                          'description': sensor.description,
                          'color': getattr(self.object, 'color' + str(i))}
                 trends.append(trend)
@@ -83,8 +84,8 @@ class TrendEdit(UpdateView):
     def get(self, request, *args, **kwargs):
         if request.is_ajax():
             obj = self.get_object()
-            name = request.GET['name']
-            obj.__dict__[name] = request.GET['color']
+            color_name = request.GET['name']
+            obj.__dict__[color_name] = request.GET['color']
             obj.save()
             return HttpResponse(status=200)
 
@@ -169,7 +170,7 @@ class Mechanism(ListView):
         return context
 
 
-def ajax_update(request, pasteurizer, trend):
+def chart_update(request, pasteurizer, trend):
     location = 'Pasteurizer' + pasteurizer
     trend_qs = models.Trend.objects.get(location__name=location, number=trend)
     try:

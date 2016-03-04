@@ -49,7 +49,7 @@
         <td>{{ forloop.counter }}</td>
         <td>{{ trend.name }}</td>
         <td>{{ trend.description }}</td>
-        <td><input type="color" name="color{{ forloop.counter }}" class="color" value="{{ trend.color }}"></td>
+        <td><input type="color" id="{{ forloop.counter }}" name="color{{ trend.number }}" class="color" value="{{ trend.color }}"></td>
     </tr>
     {% endfor %}
 </table>

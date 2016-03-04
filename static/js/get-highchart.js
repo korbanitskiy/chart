@@ -147,9 +147,10 @@ $(document).ready(function(){
     });
 
     $('.color').change(function(){
-        var color = $(this).val();
-        var name = $(this).attr('name');
-        var chart_number = parseInt(name.slice(5)) - 1;
+        var color = $(this).val(),
+            name = $(this).attr('name'),
+            id = $(this).attr('id');
+        var chart_number = parseInt(id) - 1;
         //alert(chart_number);
         chart.series[chart_number].options.color = color;
         chart.series[chart_number].update(chart.series[chart_number].options);
