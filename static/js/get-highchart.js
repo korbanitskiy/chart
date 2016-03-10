@@ -56,7 +56,7 @@ function chart_update(chart, url, from, to, auto, btn_ctrl){
             }
         },
         error: function(xhr,status,error){
-            alert('Не удалось получить данные с сервера');
+            //alert('Не удалось получить данные с сервера');
             $('#chart-container').fadeTo(1000, 1);
             if (btn_ctrl){
                 $('#chart_show_btn').attr('disabled', false);
@@ -68,8 +68,8 @@ function chart_update(chart, url, from, to, auto, btn_ctrl){
 
 $(document).ready(function(){
     var current_url = window.location.pathname,
-        chart_url = current_url.replace('pasteurizer', 'update'),
-        color_url = current_url.replace('pasteurizer', 'edit'),
+        chart_url = current_url.replace('graphic', 'update'),
+        color_url = current_url.replace('graphic', 'edit'),
         $input_from = $('#from'),
         $input_to = $('#to'),
         $btn_chart_show = $('#chart_show_btn'),
@@ -118,8 +118,8 @@ $(document).ready(function(){
     });
     function auto_update(){
         var id = setInterval(function(){
-            var from = getISOString(60);
-            var to = getISOString();
+            var from = getISOString(60),
+                to = getISOString();
             $input_from.val(from);
             $input_to.val(to);
             chart_update(chart, chart_url, from, to, chart.series.length > 0, false)

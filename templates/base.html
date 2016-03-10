@@ -52,18 +52,35 @@
                     <li class="{% block index_active %}{% endblock %}">
                         <a href="{% url 'index' %}"><i class="fa fa-home"></i><br>Главная</a>
                     </li>
-                    {% for i in '123' %}
-                        <li class="dropdown {% if i == pasteurizer %}active{% endif %}">
+
+                    <li class="dropdown">
                         <a class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200">
-                            <i class="fa fa-hourglass-half"></i><br>Пастеризатор {{ i }}<span class="caret"></span>
+                            <i class="fa fa-hourglass-half"></i><br>Пастеризатор<br>Krones<span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-left" role="menu">
-                            <li><a href="{% url 'pasteurizer' i 1 %}">Графики</a></li>
-                            <li><a href="{% url 'message' i %}">Сообщения</a></li>
-                            <li><a href="{% url 'mechanism' i %}">Механизмы</a></li>
+                            <li><a href="{% url 'graphic' 'Krones' 1 %}">Графики</a></li>
+                            <li><a href="{% url 'message' 'Krones' %}">Сообщения</a></li>
                         </ul>
                     </li>
-                    {% endfor %}
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200">
+                            <i class="fa fa-hourglass-half"></i><br>Пастеризатор<br>PET<span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-left" role="menu">
+                            <li><a href="{% url 'graphic' 'PET' 1 %}">Графики</a></li>
+                            <li><a href="{% url 'message' 'PET' %}">Сообщения</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200">
+                            <i class="fa fa-hourglass-half"></i><br>Пастеризатор<br>Sacmi<span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-left" role="menu">
+                            <li><a href="{% url 'graphic' 'Sacmi' 1 %}">Графики</a></li>
+                            <li><a href="{% url 'message' 'Sacmi' %}">Сообщения</a></li>
+                        </ul>
+                    </li>
+
                     <li>
                         <a href="{% url 'login' %}"><i class="fa fa-user"></i><br>
                             {% if user.is_active %} {{ user }} {% else %} Войти {% endif %}

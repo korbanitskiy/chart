@@ -36,7 +36,7 @@ class Sensor(models.Model):
     factor = models.FloatField(db_column='Factor', default=1.0)
 
     def __unicode__(self):
-        return self.name
+        return self.description
 
     class Meta:
         db_table = 'Sensor_List'

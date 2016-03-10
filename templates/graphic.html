@@ -31,16 +31,13 @@
 
     <div id="chart-container"></div>
 
-<ul class="nav nav-tabs">
+    <ul class="nav nav-tabs">
     {% for q in trend_qs %}
-        <li role="presentation"
-            {% ifequal trend q.number %}
-            class="active"
-            {% endifequal %}>
+        <li role="presentation" {% ifequal cur_trend_num q.number %}class="active"{% endifequal %}>
             <a href="{% url 'graphic' zone q.number %}">{{ q.number }}</a>
         </li>
     {% endfor %}
-</ul>
+    </ul>
 
 <table class="table table-bordered">
   <tr>
@@ -49,17 +46,17 @@
       <td>Описание</td>
       <td style="width: 5em">Цвет</td>
   </tr>
-  {% for trend in trends %}
+  {% for sensor in sensors %}
     <tr>
         <td>{{ forloop.counter }}</td>
-        <td>{{ trend.name }}</td>
-        <td>{{ trend.description }}</td>
-        <td><input type="color" id="{{ forloop.counter }}" name="color{{ trend.number }}" class="color" value="{{ trend.color }}"></td>
+        <td>{{ sensor.name }}</td>
+        <td>{{ sensor.description }}</td>
+        <td><input type="color" id="{{ forloop.counter }}" name="color{{ sensor.number }}" class="color" value="{{ sensor.color }}"></td>
     </tr>
     {% endfor %}
 </table>
 
 {% if user.is_active %}
-    <a href="{% url 'trend_edit' pasteurizer trend %}" class="btn btn-default">Изменить</a>
+    <a href="{% url 'trend_edit' zone trend %}" class="btn btn-default">Изменить</a>
 {% endif %}
 {% endblock %}

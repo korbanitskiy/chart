@@ -41,11 +41,11 @@ class Graphic(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(Graphic, self).get_context_data(**kwargs)
-        context['trend'] = int(self.kwargs['trend'])
+        context['cur_trend_num'] = int(self.kwargs['trend'])
         context['trend_qs'] = self.queryset
         context['zone'] = self.kwargs['zone']
 
-        trends = []
+        sensors = []
         for i in range(1, 9):
             sensor = getattr(self.object, 'trend' + str(i))
             if sensor:
@@ -53,8 +53,8 @@ class Graphic(DetailView):
                          'name': sensor.name,
                          'description': sensor.description,
                          'color': getattr(self.object, 'color' + str(i))}
-                trends.append(trend)
-        context['trends'] = trends
+                sensors.append(trend)
+        context['sensors'] = sensors
         return context
 
     def get_object(self, queryset=None):
@@ -71,15 +71,14 @@ class TrendEdit(UpdateView):
     fields = ['trend' + str(i) for i in range(1, 9)]
 
     def get_object(self, queryset=None):
-        self.location = 'Pasteurizer' + self.kwargs['pasteurizer']
-        queryset = models.Trend.objects.filter(location__name=self.location)
+        queryset = models.Trend.objects.filter(location__name=self.kwargs['zone'])
         obj = queryset.get(number=self.kwargs['trend'])
         return obj
 
     def get_success_url(self):
         trend = (self.kwargs['trend'])
-        pasteurizer = (self.kwargs['pasteurizer'])
-        return reverse('pasteurizer', args=[pasteurizer, trend])
+        zone = (self.kwargs['zone'])
+        return reverse('graphic', args=[zone, trend])
 
     def get(self, request, *args, **kwargs):
         if request.is_ajax():
@@ -88,13 +87,12 @@ class TrendEdit(UpdateView):
             obj.__dict__[color_name] = request.GET['color']
             obj.save()
             return HttpResponse(status=200)
-
         return super(TrendEdit, self).get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super(TrendEdit, self).get_context_data(**kwargs)
         for field_name in self.fields:
-            context['form'].fields[field_name].queryset = models.Sensor.objects.filter(location__name=self.location)
+            context['form'].fields[field_name].queryset = models.Sensor.objects.filter(location__name=self.kwargs['zone'])
         return context
 
 
@@ -112,7 +110,7 @@ class Message(ListView):
         self.message_type = self.request.GET.get('type', 'All')
         self.message_state = self.request.GET.get('state', 'All')
 
-        qs = models.MessageList.objects.filter(message__location__name='Pasteurizer' + self.kwargs['pasteurizer'])\
+        qs = models.MessageList.objects.filter(message__location__name=self.kwargs['zone'])\
                                        .filter(time_stamp__range=(self.date_from, self.date_to))\
                                        .order_by('-time_stamp')
 
@@ -134,7 +132,6 @@ class Message(ListView):
         context['cur_type'] = self.message_type
         context['states'] = ('Active', 'Non Active')
         context['cur_state'] = self.message_state
-        context['pasteurizer'] = self.kwargs['pasteurizer']
         return context
 
 
@@ -170,9 +167,8 @@ class Mechanism(ListView):
         return context
 
 
-def chart_update(request, pasteurizer, trend):
-    location = 'Pasteurizer' + pasteurizer
-    trend_qs = models.Trend.objects.get(location__name=location, number=trend)
+def chart_update(request, zone, trend):
+    trend_qs = models.Trend.objects.get(location__name=zone, number=trend)
     try:
         date_to = datetime.datetime.strptime(request.GET['to'], '%Y-%m-%dT%H:%M')
         date_from = datetime.datetime.strptime(request.GET['from'], '%Y-%m-%dT%H:%M')
@@ -183,22 +179,22 @@ def chart_update(request, pasteurizer, trend):
         auto_update = False
 
     sensors = []
-    for name in ['trend' + str(x) for x in range(1, 9)]:
-            trend = getattr(trend_qs, name)
-            if trend is not None:
-                obj = {'name': trend.name, 'color': getattr(trend_qs, name.replace('trend', 'color')), 'data': []}
-                if auto_update:
-                    values_qs = models.Value.objects.filter(sensor__id=trend.id).order_by('-id')[0]
-                    time_change = calendar.timegm(values_qs.change.timetuple()) * 1000
-                    obj['data'] = [time_change, values_qs.value]
-                else:
-                    values_qs = models.Value.objects.filter(sensor__id=trend.id, change__range=(date_from, date_to))
-                    # print connection.queries
-                    for x in values_qs:
-                        # time_change = time.mktime(x.change.utctimetuple()) * 1000
-                        time_change = calendar.timegm(x.change.timetuple()) * 1000
-                        obj['data'].append([time_change, x.value])
-
-                sensors.append(obj)
+    for x in range(1, 9):
+        attr_name = 'trend' + str(x)
+        trend = getattr(trend_qs, attr_name)
+        if trend is not None:
+            obj = {'name': trend.name, 'color': getattr(trend_qs, attr_name.replace('trend', 'color')), 'data': []}
+            if auto_update:
+                values_qs = models.Value.objects.filter(sensor__id=trend.id).order_by('-id')[0]
+                time_change = calendar.timegm(values_qs.change.timetuple()) * 1000
+                obj['data'] = [time_change, values_qs.value]
+            else:
+                values_qs = models.Value.objects.filter(sensor__id=trend.id, change__range=(date_from, date_to))
+                # print connection.queries
+                for x in values_qs:
+                    # time_change = time.mktime(x.change.utctimetuple()) * 1000
+                    time_change = calendar.timegm(x.change.timetuple()) * 1000
+                    obj['data'].append([time_change, x.value])
+            sensors.append(obj)
     return HttpResponse(json.dumps(sensors))
 

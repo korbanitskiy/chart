@@ -1,4 +1,9 @@
 {% extends 'base.html' %}
+{% load static %}
+{% block static %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'css/trend.css' %}">
+{% endblock %}
 {% block body %}
     <p>Location: {{ object.location }}</p>
     <p>Number: {{ object.number }}</p>
