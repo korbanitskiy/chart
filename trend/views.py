@@ -36,14 +36,14 @@ class Login(View):
             return render(request, 'login.html', {'message': 'This user can not be found'})
 
 
-class Pasteurizer(DetailView):
-    template_name = 'pasteurizer.html'
+class Graphic(DetailView):
+    template_name = 'graphic.html'
 
     def get_context_data(self, **kwargs):
-        context = super(Pasteurizer, self).get_context_data(**kwargs)
+        context = super(Graphic, self).get_context_data(**kwargs)
         context['trend'] = int(self.kwargs['trend'])
         context['trend_qs'] = self.queryset
-        context['pasteurizer'] = self.kwargs['pasteurizer']
+        context['zone'] = self.kwargs['zone']
 
         trends = []
         for i in range(1, 9):
@@ -58,7 +58,7 @@ class Pasteurizer(DetailView):
         return context
 
     def get_object(self, queryset=None):
-        self.queryset = models.Trend.objects.filter(location__name='Pasteurizer' + self.kwargs['pasteurizer'])
+        self.queryset = models.Trend.objects.filter(location__name=self.kwargs['zone'])
         try:
             obj = self.queryset.get(number=self.kwargs['trend'])
         except KeyError:

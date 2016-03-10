@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}Pasteurizer {{ pasteurizer }}{% endblock %}
+{% block title %}{{ zone }}{% endblock %}
 {% load static %}
 {% block static %}
     {{ block.super }}
@@ -33,7 +33,12 @@
 
 <ul class="nav nav-tabs">
     {% for q in trend_qs %}
-        <li role="presentation" {% ifequal trend q.number %}class="active"{% endifequal %}><a href="{% url 'pasteurizer' pasteurizer q.number %}">{{ q.number }}</a></li>
+        <li role="presentation"
+            {% ifequal trend q.number %}
+            class="active"
+            {% endifequal %}>
+            <a href="{% url 'graphic' zone q.number %}">{{ q.number }}</a>
+        </li>
     {% endfor %}
 </ul>
 
