@@ -20,7 +20,8 @@ function getISOString(minute){
 // update chart
 function chart_update(chart, url, from, to, auto, btn_ctrl){
     if (!auto){
-        $('#chart-container').fadeTo(1000, 0.2);
+        //$('#chart-container').fadeTo(1000, 0.2);
+        chart.showLoading();
         if (btn_ctrl){
             $('#chart_show_btn').attr('disabled', true)
         }
@@ -46,18 +47,17 @@ function chart_update(chart, url, from, to, auto, btn_ctrl){
                     chart.addSeries(reply[i], false)
                 });
                 chart.redraw();
-
-                if (!auto){
-                    if (btn_ctrl){
+                if (btn_ctrl){
                         $('#chart_show_btn').attr('disabled', false);
                     }
-                    $('#chart-container').fadeTo(2000, 1);
-                }
+                //$('#chart-container').fadeTo(2000, 1);
+                chart.hideLoading();
             }
         },
         error: function(xhr,status,error){
             //alert('Не удалось получить данные с сервера');
-            $('#chart-container').fadeTo(1000, 1);
+            //$('#chart-container').fadeTo(1000, 1);
+            chart.hideLoading();
             if (btn_ctrl){
                 $('#chart_show_btn').attr('disabled', false);
             }
@@ -76,17 +76,22 @@ $(document).ready(function(){
         chart = new Highcharts.Chart({
         chart: {
             renderTo: 'chart-container',
-            zoomType: 'xy',
+            zoomType: 'xy'
             //backgroundColor: 'transparent',
             //borderColor: '#ffff7f',
             //borderWidth: 2,
             //borderRadius: 20,
         },
+        exporting:{
+            chartOptions:{
+                title: {
+                    text: "sdfsdf"
+                }
+            }
+        },
+        title: null,
         credits: {
             enabled: false
-        },
-        title: {
-            text: ''
         },
         xAxis: {
             type: 'datetime',

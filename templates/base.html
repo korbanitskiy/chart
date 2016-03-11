@@ -35,11 +35,11 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="top-navbar-1">
                 <ul class="nav navbar-nav">
-                    <li class="{% block index_active %}{% endblock %}">
+                    <li class="{% if zone == 'Index' %}active{% endif %}">
                         <a href="{% url 'index' %}"><i class="fa fa-home"></i><br>Главная</a>
                     </li>
 
-                    <li class="dropdown">
+                    <li class="dropdown {% if zone == 'Krones' %}active{% endif %}">
                         <a class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200">
                             <i class="fa fa-hourglass-half"></i><br>Пастеризатор<br>Krones<span class="caret"></span>
                         </a>
@@ -48,7 +48,7 @@
                             <li><a href="{% url 'message' 'Krones' %}">Сообщения</a></li>
                         </ul>
                     </li>
-                    <li class="dropdown">
+                    <li class="dropdown {% if zone == 'PET' %}active{% endif %}">
                         <a class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200">
                             <i class="fa fa-hourglass-half"></i><br>Пастеризатор<br>PET<span class="caret"></span>
                         </a>
@@ -57,7 +57,7 @@
                             <li><a href="{% url 'message' 'PET' %}">Сообщения</a></li>
                         </ul>
                     </li>
-                    <li class="dropdown active">
+                    <li class="dropdown {% if zone == 'Sacmi' %}active{% endif %}">
                         <a class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200">
                             <i class="fa fa-hourglass-half"></i><br>Пастеризатор<br>Sacmi<span class="caret"></span>
                         </a>
@@ -67,7 +67,7 @@
                         </ul>
                     </li>
 
-                    <li>
+                    <li class="{% if zone == 'Login' %}active{% endif %}">
                         <a href="{% url 'login' %}"><i class="fa fa-user"></i><br>
                             {% if user.is_active %} {{ user }} {% else %} Войти {% endif %}
                         </a>
