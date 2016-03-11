@@ -94,8 +94,11 @@ $(document).ready(function(){
             tickColor: 'black',
             tickWidth: 2,
             dateTimeLabelFormats: {
-                month: '%e. %b',
-                year: '%b'
+                minute: '%H:%M',
+                hour: '%e. %b %H:%M',
+                day: '%e. %b',
+                month: '%b \'%y',
+                year: '%Y'
             }
         },
         yAxis: {
@@ -108,10 +111,6 @@ $(document).ready(function(){
             }
         },
         legend: {
-            layout: 'vertical',
-            align: 'right',
-            verticalAlign: 'middle',
-            borderWidth: 0,
             backgroundColor: '#eeeeee'
         }
 

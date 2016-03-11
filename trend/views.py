@@ -44,7 +44,6 @@ class Graphic(DetailView):
         context['cur_trend_num'] = int(self.kwargs['trend'])
         context['trend_qs'] = self.queryset
         context['zone'] = self.kwargs['zone']
-
         sensors = []
         for i in range(1, 9):
             sensor = getattr(self.object, 'trend' + str(i))
@@ -168,7 +167,6 @@ class Mechanism(ListView):
 
 
 def chart_update(request, zone, trend):
-    trend_qs = models.Trend.objects.get(location__name=zone, number=trend)
     try:
         date_to = datetime.datetime.strptime(request.GET['to'], '%Y-%m-%dT%H:%M')
         date_from = datetime.datetime.strptime(request.GET['from'], '%Y-%m-%dT%H:%M')
@@ -177,24 +175,23 @@ def chart_update(request, zone, trend):
         date_to = datetime.datetime.now()
         date_from = date_to - datetime.timedelta(hours=1)
         auto_update = False
-
+    trend_qs = models.Trend.objects.get(location__name=zone, number=trend)
     sensors = []
     for x in range(1, 9):
         attr_name = 'trend' + str(x)
         trend = getattr(trend_qs, attr_name)
         if trend is not None:
-            obj = {'name': trend.name, 'color': getattr(trend_qs, attr_name.replace('trend', 'color')), 'data': []}
+            obj = {'name': trend.description, 'color': getattr(trend_qs, attr_name.replace('trend', 'color')), 'data': []}
             if auto_update:
                 values_qs = models.Value.objects.filter(sensor__id=trend.id).order_by('-id')[0]
                 time_change = calendar.timegm(values_qs.change.timetuple()) * 1000
                 obj['data'] = [time_change, values_qs.value]
             else:
                 values_qs = models.Value.objects.filter(sensor__id=trend.id, change__range=(date_from, date_to))
-                # print connection.queries
-                for x in values_qs:
+                for i in values_qs:
                     # time_change = time.mktime(x.change.utctimetuple()) * 1000
-                    time_change = calendar.timegm(x.change.timetuple()) * 1000
-                    obj['data'].append([time_change, x.value])
+                    time_change = calendar.timegm(i.change.timetuple()) * 1000
+                    obj['data'].append([time_change, i.value])
             sensors.append(obj)
     return HttpResponse(json.dumps(sensors))
 
