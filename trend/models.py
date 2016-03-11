@@ -33,9 +33,10 @@ class Sensor(models.Model):
     name = models.CharField(max_length=50, db_column='Name', null=True)
     plc = models.ForeignKey(PLC, db_column='ID_PLC')
     location = models.ForeignKey(Location, db_column='ID_Location')
+    factor = models.FloatField(db_column='Factor', default=1.0)
 
     def __unicode__(self):
-        return self.name
+        return self.description
 
     class Meta:
         db_table = 'Sensor_List'
