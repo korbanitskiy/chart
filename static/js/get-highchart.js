@@ -20,7 +20,6 @@ function getISOString(minute){
 // update chart
 function chart_update(chart, url, from, to, auto, btn_ctrl){
     if (!auto){
-        //$('#chart-container').fadeTo(1000, 0.2);
         chart.showLoading();
         if (btn_ctrl){
             $('#chart_show_btn').attr('disabled', true)
@@ -33,30 +32,37 @@ function chart_update(chart, url, from, to, auto, btn_ctrl){
         data: {'from': from, 'to': to, 'auto_update': auto},
         success: function(reply) {
             if (auto) {
-                reply.forEach(function(item, i, arr){
-                    if (typeof (chart.series[i]) !== 'undefined') {
-                        chart.series[i].addPoint(reply[i].data, true, true);
+                chart.series.forEach(function(item, i){
+                    var oldPoint = item.data.slice(-1)[0],
+                        oldPointDate = oldPoint.x,
+                        newPointDate = reply[i].data[0];
+
+                    if (oldPointDate >= newPointDate){
+                        var now = new Date();
+                        reply[i].data[0] = now.getTime();
                     }
-                })
+                    item.addPoint(reply[i].data, true, true);
+                });
             }
             else {
                 while(chart.series.length > 0){
                     chart.series[0].remove();
                 }
-                reply.forEach(function(item, i, arr){
+                reply.forEach(function(item, i){
                     chart.addSeries(reply[i], false)
                 });
+                chart.series.forEach(function(item){
+                    item.options.step = 'left';
+                });
+
                 chart.redraw();
                 if (btn_ctrl){
                         $('#chart_show_btn').attr('disabled', false);
                     }
-                //$('#chart-container').fadeTo(2000, 1);
                 chart.hideLoading();
             }
         },
-        error: function(xhr,status,error){
-            //alert('Не удалось получить данные с сервера');
-            //$('#chart-container').fadeTo(1000, 1);
+        error: function(){
             chart.hideLoading();
             if (btn_ctrl){
                 $('#chart_show_btn').attr('disabled', false);
@@ -77,6 +83,7 @@ $(document).ready(function(){
         chart: {
             renderTo: 'chart-container',
             zoomType: 'xy'
+            //type: 'stepLine'
             //backgroundColor: 'transparent',
             //borderColor: '#ffff7f',
             //borderWidth: 2,
@@ -122,12 +129,12 @@ $(document).ready(function(){
     });
     function auto_update(){
         var id = setInterval(function(){
-            var from = getISOString(60),
+            var from = getISOString(120),
                 to = getISOString();
             $input_from.val(from);
             $input_to.val(to);
             chart_update(chart, chart_url, from, to, chart.series.length > 0, false)
-        }, 3000);
+        }, 5000);
         return id;
     }
     var id = auto_update();
@@ -151,6 +158,7 @@ $(document).ready(function(){
     });
 
     $('.color').change(function(){
+
         var color = $(this).val(),
             name = $(this).attr('name'),
             id = $(this).attr('id');
