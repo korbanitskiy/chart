@@ -186,7 +186,11 @@ def chart_update(request, zone, trend):
         attr_name = 'trend' + str(x)
         trend = getattr(trend_qs, attr_name)
         if trend is not None:
-            obj = {'name': trend.description, 'color': getattr(trend_qs, attr_name.replace('trend', 'color')), 'data': []}
+            obj = {'name': trend.description,
+                   'color': getattr(trend_qs, attr_name.replace('trend', 'color')),
+                   'data': [],
+                   'tooltip': {'valueSuffix': ' ' + trend.egu}
+                   }
             if auto_update:
                 values_qs = models.Value.objects.filter(sensor__id=trend.id).order_by('-id')[0]
                 time_change = calendar.timegm(values_qs.change.timetuple()) * 1000

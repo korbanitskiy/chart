@@ -106,6 +106,9 @@ $(document).ready(function(){
                 year: '%Y'
             }
         },
+        tooltip: {
+            valueDecimals: 3
+        },
         yAxis: {
             //gridLineColor: '#be7dff'
             labels: {
