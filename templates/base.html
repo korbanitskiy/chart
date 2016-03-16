@@ -7,9 +7,6 @@
     {% load static %}
     {% block static %}
         <!-- CSS -->
-    <link rel="stylesheet" href="{% static 'css/Open-Sans.css' %}">
-    <link rel="stylesheet" href="{% static 'css/Droid-Sans.css' %}">
-    <link rel="stylesheet" href="{% static 'css/Lobster.css' %}">
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/font-awesome.css' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
@@ -48,6 +45,15 @@
                             <li><a href="{% url 'message' 'Krones' %}">Сообщения</a></li>
                         </ul>
                     </li>
+                    <li class="dropdown {% if zone == 'KEG' %}active{% endif %}">
+                        <a class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200">
+                            <i class="fa fa-hourglass-half"></i><br>Пастеризатор<br>KEG<span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-left" role="menu">
+                            <li><a href="{% url 'graphic' 'KEG' 1 %}">Графики</a></li>
+                            <li><a href="{% url 'message' 'KEG' %}">Сообщения</a></li>
+                        </ul>
+                    </li>
                     <li class="dropdown {% if zone == 'PET' %}active{% endif %}">
                         <a class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200">
                             <i class="fa fa-hourglass-half"></i><br>Пастеризатор<br>PET<span class="caret"></span>
@@ -55,15 +61,6 @@
                         <ul class="dropdown-menu dropdown-menu-left" role="menu">
                             <li><a href="{% url 'graphic' 'PET' 1 %}">Графики</a></li>
                             <li><a href="{% url 'message' 'PET' %}">Сообщения</a></li>
-                        </ul>
-                    </li>
-                    <li class="dropdown {% if zone == 'Sacmi' %}active{% endif %}">
-                        <a class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200">
-                            <i class="fa fa-hourglass-half"></i><br>Пастеризатор<br>Sacmi<span class="caret"></span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-left" role="menu">
-                            <li><a href="{% url 'graphic' 'Sacmi' 1 %}">Графики</a></li>
-                            <li><a href="{% url 'message' 'Sacmi' %}">Сообщения</a></li>
                         </ul>
                     </li>
 

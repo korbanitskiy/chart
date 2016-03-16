@@ -1,0 +1,118 @@
+body {
+    background: #fff;
+    text-align: center;
+    font-family: 'Open Sans', sans-serif;
+    color: #666;
+    font-size: 14px;
+}
+
+a {
+    color: #9d426b;
+    text-decoration: none;
+    -o-transition: all .3s; -moz-transition: all .3s; -webkit-transition: all .3s; transition: all .3s;
+}
+
+a:hover, a:focus { color: #888; text-decoration: none; }
+
+strong { font-weight: bold; }
+
+/***** Top menu *****/
+
+.navbar {
+	margin-bottom: 0;
+	background: none;
+	border: 0;
+	-moz-border-radius: 0; -webkit-border-radius: 0; border-radius: 0;
+}
+
+ul.navbar-nav {
+	font-size: 14px;
+	color: #fff;
+	text-transform: uppercase;
+}
+
+ul.navbar-nav li a { padding: 23px 20px; background: none; color: #0f0f0f; border-top: 5px solid transparent;}
+ul.navbar-nav li.active a { background: none;  border-color: #CC0000; color: #0f0f0f; }
+
+ul.navbar-nav li a:hover, ul.navbar-nav li a:focus { background: linear-gradient(#c7b7d7, #eeeeee); color: #0f0f0f; border-color: #CC0000}
+
+.nav .open > a { background: linear-gradient(#c7b7d7, #eeeeee); border-color: #CC0000; color: #0f0f0f; }
+.nav .open > a:hover, .nav .open > a:focus { background: linear-gradient(#c7b7d7, #eeeeee); border-color: #CC0000; color: #0f0f0f; }
+
+ul.navbar-nav li a i { line-height: 35px; color: #606060; }
+ul.navbar-nav li a:hover i, ul.navbar-nav li a:focus i { color: #606060; }
+
+ul.navbar-nav li .dropdown-menu a {padding-top: 10px;padding-bottom: 10px; border: 0}
+ul.navbar-nav li .dropdown-menu a:hover,
+ul.navbar-nav li .dropdown-menu a:focus { background: linear-gradient(#c7b7d7, #c5c7dc); color: #5d5d5d; }
+
+.navbar>.container .navbar-brand { margin-left: 0; }
+
+.navbar-brand {
+	width: 167px;
+	height: 106px;
+    /*margin-left: 1em;*/
+	background: url(../img/logo-SunInBev.png) left  no-repeat;
+}
+
+#line {
+    background: linear-gradient(#D7D7D7, #E6E6E6);
+    height: 8pt;
+    margin: 7px 0 15px 0;
+}
+.form-inline {
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+.form-inline .form-group{
+    margin: 0 10px 0 10px;
+    /*background: transparent;*/
+}
+.table {
+    color: #0f0f0f;
+    font-size: 14px;
+}
+
+.table > tbody > tr.warning.True> td{
+    background-color: #f4f360;
+}
+.table > tbody > tr.warning.False> td{
+    background-color: #ece9b0;
+}
+.table > tbody > tr.alarm.False > td{
+    background-color: #ecbfb0;
+}
+.table > tbody > tr.alarm.True > td{
+    background-color: #ff4040;
+}
+.table > tbody > tr.event > td{
+    background-color: #a8e8f2;
+}
+.navbar .navbar-nav {
+  display: inline-block;
+  float: none;
+  vertical-align: top;
+}
+
+.navbar .navbar-collapse {
+  text-align: center;
+}
+
+.table > tbody{
+    background-color: white;
+    /*opacity: 0.9;*/
+}
+body {
+    background: url(../img/grain2.jpg) center fixed repeat;
+}
+#elaks-logo{
+    width: 81px;
+    height: 88px;
+    background: url(../img/logo-elaks-2.png) no-repeat right;
+    margin-top: 1em;
+    border-color: transparent;
+}
+
+#chart-container{
+    margin: 2em 0 2em 0;
+}
