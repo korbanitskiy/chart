@@ -1,3 +1,5 @@
+var DURATION = 120; // Chart duration in minutes
+var UPDATE_INTERVAL = 5000; // Auto update period in milliseconds
 // highchart global options
 $(function () {
         Highcharts.setOptions({
@@ -43,7 +45,7 @@ function chart_update(chart, url, from, to, auto, btn_ctrl){
                         var now = new Date();
                         reply[i].data[0] = now.getTime();
                     }
-                    var shift = (reply[i].data[0] - oldPointLeftTime) > 120*60*1000; //difference in milliseconds
+                    var shift = (reply[i].data[0] - oldPointLeftTime) > DURATION*60*1000; //difference in milliseconds
                     item.addPoint(reply[i].data, true, shift);
                 });
             }
@@ -125,12 +127,12 @@ $(document).ready(function(){
     });
     function auto_update(){
         var id = setInterval(function(){
-            var from = getISOString(120),
+            var from = getISOString(DURATION),
                 to = getISOString();
             $input_from.val(from);
             $input_to.val(to);
             chart_update(chart, chart_url, from, to, chart.series.length > 0, false)
-        }, 5000);
+        }, UPDATE_INTERVAL);
         return id;
     }
     var id = auto_update();

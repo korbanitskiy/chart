@@ -44,6 +44,7 @@
       <td style="width: 4em">#</td>
       <td style="width: 15em">Имя тренда</td>
       <td>Описание</td>
+      <td style="width: 5em">Единицы измерения</td>
       <td style="width: 5em">Цвет</td>
   </tr>
   {% for sensor in sensors %}
@@ -51,6 +52,7 @@
         <td>{{ forloop.counter }}</td>
         <td>{{ sensor.name }}</td>
         <td>{{ sensor.description }}</td>
+        <td>{{ sensor.egu }}</td>
         <td><input type="color" id="{{ forloop.counter }}" name="color{{ sensor.number }}" class="color" value="{{ sensor.color }}"></td>
     </tr>
     {% endfor %}

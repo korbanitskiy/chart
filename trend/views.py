@@ -56,7 +56,9 @@ class Graphic(DetailView):
                 trend = {'number': i,
                          'name': sensor.name,
                          'description': sensor.description,
-                         'color': getattr(self.object, 'color' + str(i))}
+                         'color': getattr(self.object, 'color' + str(i)),
+                         'egu': sensor.egu
+                         }
                 sensors.append(trend)
         context['sensors'] = sensors
         return context
