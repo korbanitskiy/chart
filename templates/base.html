@@ -64,6 +64,10 @@
                         </ul>
                     </li>
 
+                    <li class="{% if zone == 'Bottle' %}active{% endif %}">
+                        <a href="{% url 'bottle' 'Filler_L2'  %}"><i class="fa fa-legal"></i><br>Бутылки</a>
+                    </li>
+
                     <li class="{% if zone == 'Login' %}active{% endif %}">
                         <a href="{% url 'login' %}"><i class="fa fa-user"></i><br>
                             {% if user.is_active %} {{ user }} {% else %} Войти {% endif %}

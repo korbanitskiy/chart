@@ -111,7 +111,7 @@ class Message(ListView):
             self.date_from = datetime.datetime.strptime(self.request.GET['from'], '%Y-%m-%dT%H:%M')
         except KeyError:
             self.date_to = datetime.datetime.now()
-            self.date_from = self.date_to - datetime.timedelta(days=1)
+            self.date_from = self.date_to - datetime.timedelta(hours=2)
 
         self.message_type = self.request.GET.get('type', 'All')
         self.message_state = self.request.GET.get('state', 'All')
@@ -138,6 +138,7 @@ class Message(ListView):
         context['cur_type'] = self.message_type
         context['states'] = ('Active', 'Non Active')
         context['cur_state'] = self.message_state
+        context['zone'] = self.kwargs['zone']
         return context
 
 
@@ -206,3 +207,52 @@ def chart_update(request, zone, trend):
             sensors.append(obj)
     return HttpResponse(json.dumps(sensors))
 
+
+class Bottle(TemplateView):
+    template_name = 'bottle.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(Bottle, self).get_context_data(**kwargs)
+        try:
+            date_to = datetime.datetime.strptime(self.request.GET['to'], '%Y-%m-%dT%H:%M')
+            date_from = datetime.datetime.strptime(self.request.GET['from'], '%Y-%m-%dT%H:%M')
+        except KeyError:
+            date_to = datetime.datetime.now()
+            date_from = date_to - datetime.timedelta(days=30)
+
+        name = self.request.GET.get('sensor_name', 'All')
+        zone = self.kwargs['zone']
+
+        qs = models.Value.objects.filter(sensor__location__name=zone)\
+                                 .filter(change__range=(date_from, date_to))\
+                                 .filter(sensor__name__contains='BB_NL')\
+                                .filter(value__gt=0)\
+                                 .order_by('sensor__id', 'change', 'value')
+
+        if name != 'All':
+            qs = qs.filter(sensor__description=name)
+
+        distinct = []
+        d = {'sensor_id': 0, 'value': 0, 'change': 0}
+        for v in qs.values():
+            if v['value'] != d['value'] or v['sensor_id'] != d['sensor_id']:
+                d = v
+                distinct.append(d)
+
+        for value in distinct:
+            value['name'] = models.Sensor.objects.get(id=value['sensor_id']).description
+            for sensor_name in ('Vacum', 'MonoActualSpeed', 'Pbeer_circul_Buf', 'Lbeer_circul_Buf'):
+                sensor_data = models.Value.objects.filter(sensor__name=sensor_name, change__lte=value['change'])\
+                                                  .order_by('-change')
+                if sensor_data and value['value'] > 0:
+                    value[sensor_name] = sensor_data[0].value
+                else:
+                    value[sensor_name] = 'No data'
+
+        context['zone'] = 'bottle'
+        context['object_list'] = distinct
+        context['date_to'] = date_to.strftime('%Y-%m-%dT%H:%M')
+        context['date_from'] = date_from.strftime('%Y-%m-%dT%H:%M')
+        context['sensors'] = models.Sensor.objects.filter(location__name=zone, name__contains='BB_NL')
+        context['cur_name'] = name
+        return context

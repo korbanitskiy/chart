@@ -12,6 +12,8 @@ urlpatterns = patterns('',
         url(r'^edit/(?P<zone>\w+)/(?P<trend>[0-9]+)/$', views.TrendEdit.as_view(), name='trend_edit'),
         url(r'^update/(?P<zone>\w+)/(?P<trend>[0-9]+)/$', views.chart_update),
         url(r'^message/(?P<zone>\w+)/$', views.Message.as_view(), name='message'),
+        url(r'^bottle/(?P<zone>\w+)/$', views.Bottle.as_view(), name='bottle'),
+
         # url(r'^mechanism/(?P<zone>[0-9]+)/$', views.Mechanism.as_view(), name='mechanism'),
         )
 

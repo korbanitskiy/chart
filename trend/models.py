@@ -46,8 +46,8 @@ class Sensor(models.Model):
 class Value(models.Model):
     id = models.AutoField(primary_key=True, db_column='Id')
     value = models.FloatField(null=True, db_column='Value')
-    change = models.DateTimeField(db_column='ChangeDate',)
-    sensor = models.ForeignKey(Sensor, db_column='ID_Sensor')
+    change = models.DateTimeField(db_column='ChangeDate')
+    sensor = models.ForeignKey(Sensor, db_column='ID_Sensor', related_name='value_set')
 
     def __unicode__(self):
         return str(self.value)

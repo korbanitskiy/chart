@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}Bottle{% endblock %}
+{% block body %}
+<form class="form-inline">
+    <div class="form-group">
+        <label for="from">Начало</label>
+        <input type="datetime-local" name="from" value="{{ date_from }}">
+    </div>
+    <div class="form-group">
+        <label for="to">Конец</label>
+        <input type="datetime-local" name="to" value="{{ date_to }}">
+    </div>
+    <div class="form-group">
+        <span>Имя</span>
+        <select class="form-control" name="sensor_name">
+            <option>All</option>
+            {% for sensor in sensors %}
+                <option {% ifequal cur_name sensor.description %}selected="selected"{% endifequal %}>
+                    {{ sensor.description }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <button type="submit">Показать</button>
+</form>
+
+<table class="table table-condensed">
+  <tr>
+      <td>#</td>
+      <td>Время</td>
+      <td>Наливатель</td>
+      <td>Номер взрыва</td>
+      <td>Скорость моноблока</td>
+      <td>Давление</td>
+      <td>Уровень</td>
+      <td>Вакуум</td>
+  </tr>
+  {% for object in object_list %}
+  <tr>
+    <td>{{ forloop.counter }}</td>
+    <td>{{ object.change|date:"Y-m-d, H:i:s" }}</td>
+    <td>{{ object.name }}</td>
+    <td>{{ object.value }}</td>
+    <td>{{ object.MonoActualSpeed }}</td>
+    <td>{{ object.Pbeer_circul_Buf }}</td>
+    <td>{{ object.Lbeer_circul_Buf }}</td>
+    <td>{{ object.Vacum }}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+
+
+
+{% endblock %}
+

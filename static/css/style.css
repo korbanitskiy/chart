@@ -77,16 +77,20 @@ ul.navbar-nav li .dropdown-menu a:focus { background: linear-gradient(#c7b7d7, #
     background-color: #f4f360;
 }
 .table > tbody > tr.warning.False> td{
-    background-color: #ece9b0;
+    background-color: #c0c0c0;
 }
 .table > tbody > tr.alarm.False > td{
-    background-color: #ecbfb0;
+    background-color: #c0c0c0;
 }
 .table > tbody > tr.alarm.True > td{
     background-color: #ff4040;
 }
-.table > tbody > tr.event > td{
+.table > tbody > tr.event.True > td {
     background-color: #a8e8f2;
+}
+
+.table > tbody > tr.event.False > td{
+    background-color: #c0c0c0;
 }
 .navbar .navbar-nav {
   display: inline-block;
