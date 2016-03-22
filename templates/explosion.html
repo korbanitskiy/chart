@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block tittle %}
+Explosions
+{% endblock %}
+{% block body %}
+<form class="form-inline">
+    <div class="form-group">
+        <label for="from">Начало</label>
+        <input type="datetime-local" name="from" value="{{ date_from }}">
+    </div>
+    <div class="form-group">
+        <label for="to">Конец</label>
+        <input type="datetime-local" name="to" value="{{ date_to }}">
+    </div>
+    <div class="form-group">
+        <span>Наливатель</span>
+        <select class="form-control" name="streamer">
+            <option>All</option>
+            {% for streamer in streamers %}
+                <option {% if cur_streamer == streamer.id %}selected="selected"{% endif %} value="{{ streamer.id }}">
+                    {{ streamer.description }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    <button type="submit">Показать</button>
+</form>
+
+<table class="table table-condensed">
+{% if cur_streamer == 'All' %}
+    <tr>
+        <td>Наливатель</td>
+        <td>Количество взрывов</td>
+    </tr>
+    {% for object in object_list %}
+        <tr>
+            <td>{{ object.name }}</td>
+            <td>{{ object.value }}</td>
+        </tr>
+    {% endfor %}
+{% else %}
+    <tr>
+        <td>Дата</td>
+        <td>Номер взрыва</td>
+        <td>Скорость моноблока, бут/час</td>
+        <td>Давление пива, бар</td>
+        <td>Уровень пива, мм</td>
+        <td>Величина вакуума, бар</td>
+    </tr>
+    {% for object in object_list %}
+        <tr>
+            <td>{{ object.explosion_date|date:"Y-m-d, H:i:s" }}</td>
+            <td>{{ object.explosion_number }}</td>
+            <td>{{ object.MonoActualSpeed }}</td>
+            <td>{{ object.Pbeer_circul_Buf }}</td>
+            <td>{{ object.Lbeer_circul_Buf }}</td>
+            <td>{{ object.Vacum }}</td>
+        </tr>
+    {% endfor %}
+
+{% endif %}
+</table>
+{% endblock %}

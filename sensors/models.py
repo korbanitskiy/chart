@@ -35,6 +35,7 @@ class Sensor(models.Model):
     location = models.ForeignKey(Location, db_column='ID_Location')
     factor = models.FloatField(db_column='Factor', default=1)
     deadband = models.FloatField(db_column='Deadband', default=0)
+    dublicate = models.BooleanField(db_column='Dublicate', default=1)
 
     def __unicode__(self):
         return self.description
@@ -54,66 +55,6 @@ class Value(models.Model):
 
     class Meta:
         db_table = 'Value_List'
-
-
-class Mechanism(models.Model):
-    id = models.AutoField(primary_key=True, db_column='Id')
-    name = models.CharField(max_length=50)
-    address = models.CharField(max_length=50, blank=True, null=True)
-    plc = models.ForeignKey(PLC, db_column='PLCID')
-    location = models.ForeignKey(Location, db_column='LocationId')
-
-    class Meta:
-        db_table = 'Mechanism'
-
-
-class State(models.Model):
-    id = models.IntegerField(primary_key=True, db_column='Id')
-    text = models.CharField(max_length=50, db_column='State')
-
-    class Meta:
-        db_table = 'State'
-
-
-class StateList(models.Model):
-    id = models.AutoField(primary_key=True, db_column='Id')
-    mechanism = models.ForeignKey(Mechanism, db_column='MechanismID')
-    state = models.ForeignKey(State, db_column='StateValue')
-    time_stamp = models.DateTimeField(db_column='TimeStamp')
-
-    class Meta:
-        db_table = 'StateList'
-
-
-class MessageType(models.Model):
-    id = models.AutoField(primary_key=True, db_column='Id')
-    text = models.CharField(max_length=50, db_column='Type')
-
-    class Meta:
-        db_table = 'MessageType'
-
-
-class Message(models.Model):
-    id = models.AutoField(primary_key=True, db_column='Id')
-    text = models.CharField(max_length=255, db_column='Text')
-    address = models.CharField(max_length=50, db_column='Address')
-    plc = models.ForeignKey(PLC, db_column='PLCID')
-    type = models.ForeignKey(MessageType, db_column='TypeId')
-    location = models.ForeignKey(Location, db_column='LocationId')
-
-    class Meta:
-        db_table = 'Message'
-
-
-class MessageList(models.Model):
-    id = models.AutoField(primary_key=True, db_column='Id')
-    message = models.ForeignKey(Message, db_column='MessageID')
-    state = models.BooleanField(db_column='State')
-    value = models.FloatField(db_column='Value', blank=True, null=True)
-    time_stamp = models.DateTimeField(db_column='TimeStamp')
-
-    class Meta:
-        db_table = 'MessageList'
 
 
 class Trend(models.Model):
@@ -142,29 +83,3 @@ class Trend(models.Model):
 
     class Meta:
         db_table = 'Trend'
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

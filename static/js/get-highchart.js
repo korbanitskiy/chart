@@ -1,13 +1,13 @@
 var DURATION = 120; // Chart duration in minutes
 var UPDATE_INTERVAL = 5000; // Auto update period in milliseconds
-// highchart global options
+
 $(function () {
         Highcharts.setOptions({
             global: {
                 useUTC: false
             }
         });
-    });
+    });// highchart global options
 
 // get local datetime ISO string
 function getISOString(minute){
@@ -100,7 +100,6 @@ $(document).ready(function(){
             tickColor: 'black',
             tickWidth: 2,
             dateTimeLabelFormats: {
-                //minute: '%H:%M',
                 minute: '%e. %b %H:%M',
                 hour: '%e. %b %H:%M',
                 day: '%e. %b',
@@ -112,7 +111,6 @@ $(document).ready(function(){
             valueDecimals: 3
         },
         yAxis: {
-            //gridLineColor: '#be7dff'
             labels: {
                 style: {
                     color: '#00',
@@ -123,7 +121,6 @@ $(document).ready(function(){
         legend: {
             backgroundColor: '#eeeeee'
         }
-
     });
     function auto_update(){
         var id = setInterval(function(){

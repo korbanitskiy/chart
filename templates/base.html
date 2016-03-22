@@ -10,65 +10,56 @@
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/font-awesome.css' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-	 <!-- Javascript -->
-    <script src="{% static 'js/jquery-2.2.1.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/bootstrap-hover-dropdown.min.js' %}"></script>
     {% endblock %}
 </head>
 <body>
-        <!-- Top menu -->
     <nav class="navbar col-md-10 col-md-offset-1" role="navigation">
         <div>
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#top-navbar-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
                 <a class="navbar-brand" href="{% url 'index' %}"></a>
             </div>
-            <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="top-navbar-1">
                 <ul class="nav navbar-nav">
-                    <li class="{% if zone == 'Index' %}active{% endif %}">
+                    <li class="{% if location == 'Index' %}active{% endif %}">
                         <a href="{% url 'index' %}"><i class="fa fa-home"></i><br>Главная</a>
                     </li>
-
-                    <li class="dropdown {% if zone == 'Krones' %}active{% endif %}">
+                    <li class="dropdown {% if location == 'Krones' %}active{% endif %}">
                         <a class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200">
                             <i class="fa fa-hourglass-half"></i><br>Пастеризатор<br>Krones<span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-left" role="menu">
-                            <li><a href="{% url 'graphic' 'Krones' 1 %}">Графики</a></li>
-                            <li><a href="{% url 'message' 'Krones' %}">Сообщения</a></li>
+                            <li><a href="{% url 'sensors:graphic' 'Krones' 1 %}">Графики</a></li>
+                            <li><a href="{% url 'messages:message' 'Krones' %}">Сообщения</a></li>
                         </ul>
                     </li>
-                    <li class="dropdown {% if zone == 'KEG' %}active{% endif %}">
+                    <li class="dropdown {% if location == 'KEG' %}active{% endif %}">
                         <a class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200">
                             <i class="fa fa-hourglass-half"></i><br>Пастеризатор<br>KEG<span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-left" role="menu">
-                            <li><a href="{% url 'graphic' 'KEG' 1 %}">Графики</a></li>
-                            <li><a href="{% url 'message' 'KEG' %}">Сообщения</a></li>
+                            <li><a href="{% url 'sensors:graphic' 'KEG' 1 %}">Графики</a></li>
+                            <li><a href="{% url 'messages:message' 'KEG' %}">Сообщения</a></li>
                         </ul>
                     </li>
-                    <li class="dropdown {% if zone == 'PET' %}active{% endif %}">
+                    <li class="dropdown {% if location == 'PET' %}active{% endif %}">
                         <a class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200">
                             <i class="fa fa-hourglass-half"></i><br>Пастеризатор<br>PET<span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-left" role="menu">
-                            <li><a href="{% url 'graphic' 'PET' 1 %}">Графики</a></li>
-                            <li><a href="{% url 'message' 'PET' %}">Сообщения</a></li>
+                            <li><a href="{% url 'sensors:graphic' 'PET' 1 %}">Графики</a></li>
+                            <li><a href="{% url 'messages:message' 'PET' %}">Сообщения</a></li>
                         </ul>
                     </li>
-
-                    <li class="{% if zone == 'Bottle' %}active{% endif %}">
-                        <a href="{% url 'bottle' 'Filler_L2'  %}"><i class="fa fa-legal"></i><br>Бутылки</a>
+                    <li class="dropdown {% if location == 'Parameters' or location == 'Streamers' %}active{% endif %}">
+                        <a class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="200">
+                            <i class="fa fa-hourglass-half"></i><br>Наливатели<span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-left" role="menu">
+                            <li><a href="{% url 'sensors:graphic' 'Parameters' 1 %}">Графики</a></li>
+                            <li><a href="{% url 'sensors:explosion' 'Streamers' %}">Взрывы</a></li>
+                        </ul>
                     </li>
-
-                    <li class="{% if zone == 'Login' %}active{% endif %}">
+                    <li class="{% if location == 'Login' %}active{% endif %}">
                         <a href="{% url 'login' %}"><i class="fa fa-user"></i><br>
                             {% if user.is_active %} {{ user }} {% else %} Войти {% endif %}
                         </a>
@@ -82,21 +73,16 @@
         </div>
     </nav>
 
-        <!-- tittle under menu -->
     <div id="line" class="col-md-12"></div>
     <div class="col-md-10 col-md-offset-1">
         {% block body %}
         {% endblock %}
     </div>
 
-{#    <!-- Footer -->#}
-{#    <footer class="col-md-12">#}
-{#       <div class="footer-copyright fadeIn">#}
-{#                    <p>Copyright 2016 Elaks - All rights reserved.</p>#}
-{#                </div>#}
-{#    </footer>#}
-
-
-
-    </body>
+    {% block javaScriptInclude %}
+        <script src="{% static 'js/jquery-2.2.1.min.js' %}"></script>
+        <script src="{% static 'js/bootstrap.min.js' %}"></script>
+        <script src="{% static 'js/bootstrap-hover-dropdown.min.js' %}"></script>
+    {% endblock %}
+</body>
 </html>

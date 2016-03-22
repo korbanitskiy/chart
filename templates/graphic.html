@@ -1,13 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}{{ zone }}{% endblock %}
-{% load static %}
-{% block static %}
-    {{ block.super }}
-    <script type="text/javascript" src="{% static 'js/highcharts.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/exporting.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/get-highchart.js' %}"></script>
-{% endblock %}
-
+{% block title %}{{ location }}{% endblock %}
 {% block body %}
     <form class="form-inline">
         <div class="form-group">
@@ -34,7 +26,7 @@
     <ul class="nav nav-tabs">
     {% for q in trend_qs %}
         <li role="presentation" {% ifequal cur_trend_num q.number %}class="active"{% endifequal %}>
-            <a href="{% url 'graphic' zone q.number %}">{{ q.number }}</a>
+            <a href="{% url 'sensors:graphic' location q.number %}">{{ q.number }}</a>
         </li>
     {% endfor %}
     </ul>
@@ -59,6 +51,14 @@
 </table>
 
 {% if user.is_active %}
-    <a href="{% url 'trend_edit' zone trend %}" class="btn btn-default">Изменить</a>
+    <a href="{% url 'sensors:edit' location trend %}" class="btn btn-default">Изменить</a>
 {% endif %}
+{% endblock %}
+
+{% block javaScriptInclude %}
+{% load static %}
+    {{ block.super }}
+    <script type="text/javascript" src="{% static 'js/highcharts.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/exporting.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/get-highchart.js' %}"></script>
 {% endblock %}
