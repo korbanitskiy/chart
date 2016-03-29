@@ -86,7 +86,6 @@ $(document).ready(function(){
         $btn_chart_show = $('#chart_show_btn'),
         chart = new Highcharts.Chart({
         chart: {
-
             renderTo: 'chart-container',
             zoomType: 'xy'
         },
@@ -158,7 +157,6 @@ $(document).ready(function(){
             name = $(this).attr('name'),
             id = $(this).attr('id');
         var chart_number = parseInt(id) - 1;
-        //alert(chart_number);
         chart.series[chart_number].options.color = color;
         chart.series[chart_number].update(chart.series[chart_number].options);
         $.ajax({

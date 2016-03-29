@@ -2,10 +2,10 @@
 from django.views.generic import DetailView, UpdateView, ListView
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
-import datetime
-import json
+from datetime import datetime, timedelta
+from json import loads, dumps
+from myFunctions import epoch_time
 from models import Trend, Sensor, Value
-import calendar
 
 
 class Graphic(DetailView):
@@ -71,29 +71,32 @@ class Explosion(ListView):
 
     def get_queryset(self):
         try:
-            self.date_to = datetime.datetime.strptime(self.request.GET['to'], '%Y-%m-%dT%H:%M')
-            self.date_from = datetime.datetime.strptime(self.request.GET['from'], '%Y-%m-%dT%H:%M')
+            self.date_to = datetime.strptime(self.request.GET['to'], '%Y-%m-%dT%H:%M')
+            self.date_from = datetime.strptime(self.request.GET['from'], '%Y-%m-%dT%H:%M')
         except KeyError:
-            self.date_to = datetime.datetime.now()
-            self.date_from = self.date_to - datetime.timedelta(hours=24)
+            self.date_to = datetime.now()
+            self.date_from = self.date_to - timedelta(hours=24)
         self.streamer = self.request.GET.get('streamer', 'All')
         object_list = []
         if self.streamer == 'All':
-            qs = Sensor.objects.filter(location__name=self.kwargs['location'])
-            for i in qs.values_list('id', flat=True):
-                description = qs.get(id=i).description
-                value = Value.objects.filter(sensor__id=i, change__range=(self.date_from, self.date_to)).count()
-                if value > 0:
-                    object_list.append({'name': description, 'value': value})
+            qs = Sensor.objects.filter(location__name=self.kwargs['location']).values('id', 'description')
+            for i in qs:
+                count = Value.objects.filter(sensor__id=i['id'], change__range=(self.date_from, self.date_to)).count()
+                if count > 0:
+                    object_list.append({'name': i['description'], 'value': count})
         else:
             explosions = Value.objects.filter(sensor__id=self.streamer, change__range=(self.date_from, self.date_to))\
-                                      .order_by('-change')
+                                      .order_by('-change')\
+                                      .values('value', 'change')
             for explosion in explosions:
-                options = {'explosion_number': explosion.value, 'explosion_date': explosion.change}
+                options = {'explosion_number': explosion['value'], 'explosion_date': explosion['change']}
                 for name in ('MonoActualSpeed', 'Pbeer_circul_Buf', 'Lbeer_circul_Buf', 'Vacum'):
-                    qs = Value.objects.filter(sensor__name=name, change__lte=explosion.change).order_by('-change')
-                    if qs.count() > 0:
-                        options[name] = qs[0]
+                    qs = Value.objects.filter(sensor__name=name)\
+                                      .filter(change__gt=self.date_from, change__lte=explosion['change'])\
+                                      .order_by('change')\
+                                      .last()
+                    if qs:
+                        options[name] = qs.value
                     else:
                         options[name] = 'Нет данных'
                 object_list.append(options)
@@ -113,33 +116,26 @@ class Explosion(ListView):
 
 
 def online_update(request, location, trend):
-    try:
-        date_to = datetime.datetime.strptime(request.GET['to'], '%Y-%m-%dT%H:%M')
-        date_from = datetime.datetime.strptime(request.GET['from'], '%Y-%m-%dT%H:%M')
-        auto_update = json.loads(request.GET['auto_update'])
-    except KeyError:
-        date_to = datetime.datetime.now()
-        date_from = date_to - datetime.timedelta(hours=1)
-        auto_update = False
+    date_to = datetime.strptime(request.GET['to'], '%Y-%m-%dT%H:%M')
+    date_from = datetime.strptime(request.GET['from'], '%Y-%m-%dT%H:%M')
+    auto_update = loads(request.GET['auto_update'])
     trend_obj = Trend.objects.get(location__name=location, number=trend)
     sensors = []
-    for x in range(1, 9):
-        attr_name = 'trend' + str(x)
+    for attr_name in ('trend1', 'trend2', 'trend3', 'trend4', 'trend5', 'trend6', 'trend7', 'trend8'):
         trend = getattr(trend_obj, attr_name)
-        if trend is not None:
+        if trend:
             obj = {'name': trend.description,
                    'color': getattr(trend_obj, attr_name.replace('trend', 'color')),
                    'data': [],
                    'tooltip': {'valueSuffix': ' ' + trend.egu}
                    }
             if auto_update:
-                values_qs = Value.objects.filter(sensor__id=trend.id).order_by('-id')[0]
-                time_change = calendar.timegm(values_qs.change.timetuple()) * 1000
-                obj['data'] = [time_change, values_qs.value]
+                last_point = Value.objects.filter(sensor__id=trend.id).latest('change_date')
+                obj['data'] = [epoch_time(last_point.change), last_point.value]
             else:
-                values_qs = Value.objects.filter(sensor__id=trend.id, change__range=(date_from, date_to))
-                for i in values_qs:
-                    time_change = calendar.timegm(i.change.timetuple()) * 1000
-                    obj['data'].append([time_change, i.value])
+                all_points = Value.objects.filter(sensor__id=trend.id, change__range=(date_from, date_to))\
+                                         .order_by('change')\
+                                         .values('value', 'change')
+                obj['data'] = [[epoch_time(x['change']), x['value']] for x in all_points]
             sensors.append(obj)
-    return HttpResponse(json.dumps(sensors))
+    return HttpResponse(dumps(sensors))

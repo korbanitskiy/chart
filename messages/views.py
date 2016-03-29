@@ -1,5 +1,5 @@
 from django.views.generic import ListView
-import datetime
+from datetime import datetime, timedelta
 from models import MessageList, MessageType
 
 
@@ -8,16 +8,16 @@ class Message(ListView):
 
     def get_queryset(self):
         try:
-            self.date_to = datetime.datetime.strptime(self.request.GET['to'], '%Y-%m-%dT%H:%M')
-            self.date_from = datetime.datetime.strptime(self.request.GET['from'], '%Y-%m-%dT%H:%M')
+            self.date_to = datetime.strptime(self.request.GET['to'], '%Y-%m-%dT%H:%M')
+            self.date_from = datetime.strptime(self.request.GET['from'], '%Y-%m-%dT%H:%M')
         except KeyError:
-            self.date_to = datetime.datetime.now()
-            self.date_from = self.date_to - datetime.timedelta(hours=2)
+            self.date_to = datetime.now()
+            self.date_from = self.date_to - timedelta(hours=2)
         self.message_type = self.request.GET.get('type', 'All')
         self.message_state = self.request.GET.get('state', 'All')
         qs = MessageList.objects.filter(message__location__name=self.kwargs['location'])\
-                                       .filter(time_stamp__range=(self.date_from, self.date_to))\
-                                       .order_by('-time_stamp')
+                                .filter(time_stamp__range=(self.date_from, self.date_to))\
+                                .order_by('-time_stamp')
         if self.message_type != 'All':
             qs = qs.filter(message__type__text=self.message_type)
         if self.message_state != 'All':
