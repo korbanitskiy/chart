@@ -24,7 +24,8 @@ $(document).ready(function(){
         var current = new Date(),
             timezoneOffset = current.getTimezoneOffset() * 60 * 1000,
             to = new Date(current.getTime() - timezoneOffset),
-            from = to.setMinutes(to.getMinutes() - graphic.duration);
+            from = new Date(current.getTime() - timezoneOffset);
+        from.setMinutes(to.getMinutes() - graphic.duration);
         graphic.to = to.toISOString().replace('Z', '').slice(0, 16);
         graphic.from = from.toISOString().replace('Z', '').slice(0, 16);
         $('#to').val(graphic.to);
@@ -61,20 +62,23 @@ $(document).ready(function(){
             data: {'from': graphic.from, 'to': graphic.to, 'auto_update': true},
             success: function (reply) {
                 graphic.object.series.forEach(function (item, i) {
-                    var oldPointRightTime = item.data.slice(-1)[0].x,
-                        oldPointLeftTime = item.data[0].x,
-                        newPointTime = reply[i].data[0];
-                    if (oldPointRightTime >= newPointTime) {
-                        reply[i].data[0] = new Date().getTime();
+                    if (item.data.length > 0 && reply[i].data != null){
+                        var oldPointRightTime = item.data.slice(-1)[0].x,
+                            oldPointLeftTime = item.data[0].x,
+                            newPointTime = reply[i].data[0];
+                        if (oldPointRightTime >= newPointTime) {
+                            reply[i].data[0] = new Date().getTime();
+                        }
+                        var need_shift = (reply[i].data[0] - oldPointLeftTime) > graphic.duration * 60 * 1000;
+                        item.addPoint(reply[i].data, true, need_shift);
                     }
-                    var need_shift = (reply[i].data[0] - oldPointLeftTime) > graphic.duration * 60 * 1000; //difference in milliseconds
-                    item.addPoint(reply[i].data, true, need_shift);
+
                 });
             }
         });
     },
     startAutoUpdate: function(url){
-        if (id == null){
+        if (graphic.id == null){
             graphic.id = setInterval(function(){
                 graphic.timeWrite();
                 graphic.updateLastPoint(url);
@@ -88,7 +92,6 @@ $(document).ready(function(){
         }
     }
 };
-
     var current_url = window.location.pathname,
         chart_url = current_url.replace('graphic', 'update'),
         color_url = current_url.replace('graphic', 'edit');
@@ -130,8 +133,9 @@ $(document).ready(function(){
         }
     });
     graphic.timeWrite();
-    graphic.updateAllPoints();
+    graphic.updateAllPoints(chart_url);
     graphic.startAutoUpdate(chart_url);
+
 
     $("#chart_type").change(function(){
         if ($(this).val() != 'online'){
@@ -165,6 +169,7 @@ $(document).ready(function(){
     });
 
      $('#chart_show_btn').click(function(){
+         graphic.clearData();
          graphic.timeRead();
          graphic.updateAllPoints(chart_url)
 

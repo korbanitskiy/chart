@@ -2,6 +2,7 @@
 from django.views.generic import DetailView, UpdateView, ListView
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
+from django.core.exceptions import ObjectDoesNotExist
 from datetime import datetime, timedelta
 from json import loads, dumps
 from myFunctions import epoch_time
@@ -130,8 +131,11 @@ def online_update(request, location, trend):
                    'tooltip': {'valueSuffix': ' ' + trend.egu}
                    }
             if auto_update:
-                last_point = Value.objects.filter(sensor__id=trend.id).latest('change_date')
-                obj['data'] = [epoch_time(last_point.change), last_point.value]
+                try:
+                    last_point = Value.objects.filter(sensor__id=trend.id).latest('change')
+                    obj['data'] = [epoch_time(last_point.change), last_point.value]
+                except ObjectDoesNotExist:
+                    obj['data'] = [0, 0]
             else:
                 all_points = Value.objects.filter(sensor__id=trend.id, change__range=(date_from, date_to))\
                                          .order_by('change')\
